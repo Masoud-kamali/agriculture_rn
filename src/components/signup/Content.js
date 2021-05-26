@@ -11,6 +11,7 @@ import Ripple from "react-native-material-ripple";
 
 
 const w = Dimensions.get('window').width;
+const h = Dimensions.get('window').height;
 
 const Content = (props) =>{
     const {firstNameHandler, lastNameHandler, userNameHandler, passwordHandler, confirmPasswordHandler,  signUpUser, isSelectedHandler} = props;
@@ -71,8 +72,8 @@ const Content = (props) =>{
 
     return(
         <View style={styles.container}>
-            <View style={styles.textTitle}>
-                <Text style={styles.titleStyle}>ثبت نام کاربر</Text>
+            <View style={styles.secHeader}>
+                <Text style={styles.TextHeader}>ثبت نام کاربر</Text>
             </View>
             <View style={styles.secOne}>
                 <TouchableOpacity
@@ -88,7 +89,7 @@ const Content = (props) =>{
                         onFocus={()=>_changeBorderFirstName()}
                         onChangeText={(event)=>firstNameHandler(event)}
                     />
-                    <Entypo name="user" size={22} color="#090962" />
+                    <Entypo name="user" size={focusFirstNameHandler ? 26 : 22} color="#090962" />
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[styles.secOnePartOne, focusLastNameHandler ? {borderBottomWidth: 2.2} : {}]}
@@ -103,7 +104,7 @@ const Content = (props) =>{
                         onFocus={()=>_changeBorderLastName()}
                         onChangeText={(event)=>lastNameHandler(event)}
                     />
-                    <Entypo name="user" size={22} color="#090962" />
+                    <Entypo name="user" size={focusLastNameHandler ? 26 : 22} color="#090962" />
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[styles.secOnePartOne, focusUserHandler ? {borderBottomWidth: 2.2} : {}]}
@@ -118,7 +119,7 @@ const Content = (props) =>{
                         onFocus={()=>_changeBorderUser()}
                         onChangeText={(event)=>userNameHandler(event)}
                     />
-                    <Icon name="user" size={24} color="#090962" />
+                    <Icon name="user" size={focusUserHandler ? 26 : 24} color="#090962" />
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[styles.secOnePartOne, focusPassHandler ? {borderBottomWidth: 2.2} : {}]}
@@ -134,7 +135,7 @@ const Content = (props) =>{
                         onFocus={()=>_changeBorderPass()}
                         onChangeText={(event)=>passwordHandler(event)}
                     />
-                    <Icon name="lock" size={26} color="#090962" />
+                    <Icon name="lock" size={focusPassHandler ? 30 : 26} color="#090962" />
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[styles.secOnePartOne, focusConfirmPassHandler ? {borderBottomWidth: 2.2} : {}]}
@@ -150,7 +151,7 @@ const Content = (props) =>{
                         onFocus={()=>_changeBorderConfirmPass()}
                         onChangeText={(event)=>confirmPasswordHandler(event)}
                     />
-                    <Icon name="lock" size={26} color="#090962" />
+                    <Icon name="lock" size={focusConfirmPassHandler ? 30 : 26} color="#090962" />
                 </TouchableOpacity>
                 <View style={styles.checkboxContainer}>
                     <Text style={styles.label}>
@@ -193,8 +194,28 @@ const styles= StyleSheet.create({
         alignItems: 'center',
         justifyContent:'center',
         backgroundColor: '#ebf7e3',
-        borderRadius: 8,
+        borderBottomLeftRadius: 8,
+        borderBottomRightRadius: 8,
         padding: 15,
+    },
+    secHeader:{
+        marginTop: 40,
+        margin: 0,
+        padding:0,
+        height: h/11,
+        backgroundColor:'#219372',
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 15,
+        alignItems: 'center',
+        justifyContent:'center',
+
+    },
+
+    TextHeader:{
+        textAlign: 'center',
+        fontSize: 25,
+        color: '#fff',
+        fontWeight: 'bold'
     },
     secOnePartOne:{
         margin:0,
@@ -238,7 +259,7 @@ const styles= StyleSheet.create({
         marginTop: 30,
         marginBottom: 5,
         width:'90%',
-        backgroundColor : '#0e240a',
+        backgroundColor : '#219372',
         padding:6,
         borderRadius: 7,
     },

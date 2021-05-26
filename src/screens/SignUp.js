@@ -3,12 +3,7 @@ import {View, ToastAndroid, StatusBar} from 'react-native';
 import Content from '../components/signup/Content';
 import MyHeader from '../components/header/MyHeader';
 import Toast from 'react-native-simple-toast';
-
-let props = {
-    name:'Login',
-    title:'ورود کاربر'
-};
-
+import instance from '../services/axios';
 
 const SignUp = ({navigation}) => {
 
@@ -64,7 +59,38 @@ const SignUp = ({navigation}) => {
         }else if(isSelected != true){
             Toast.show('قوانین را قبول نکرده اید', Toast.LONG);
         }else{
-            navigation.navigate('Login')
+            instance.post('/user/', {
+                first_name: firstName,
+                last_name: lastName,
+                username: userName,
+                password: password,
+                password2: confirmPassword,
+            })
+              .then(function (response) {
+                  if(response.status === 201){
+                      navigation.navigate('Login')
+                  }
+              })
+              .catch(function (error) {
+
+                  if(error.response.data.first_name !== undefined){
+                      Toast.show(error.response.data.first_name[0], Toast.LONG);
+
+                  }else if(error.response.data.last_name !== undefined){
+                      Toast.show(error.response.data.last_name[0], Toast.LONG);
+
+                  }else if(error.response.data.username !== undefined){
+                      Toast.show(error.response.data.username[0], Toast.LONG);
+
+                  }else if(error.response.data.password !== undefined){
+                      Toast.show(error.response.data.password[0], Toast.LONG);
+
+                  }else if(error.response.data.password2 !== undefined){
+                      Toast.show(error.response.data.password2[0], Toast.LONG);
+
+                  }
+
+              });
         }
 
 

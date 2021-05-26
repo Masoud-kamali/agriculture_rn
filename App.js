@@ -1,6 +1,6 @@
-
+import deviceStorage from './src/services/deviceStorage.js';
 import 'react-native-gesture-handler';
-import React from 'react';
+import React,{useState, useEffect} from 'react';
 import {ScrollView} from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -17,6 +17,9 @@ import Activity from './src/screens/Activity';
 import Inbox from './src/screens/Inbox';
 import Message from './src/screens/Message';
 import CreateActivity from './src/screens/CreateActivity';
+import Loading from './src/screens/Loading';
+
+import {AuthContext} from './src/auth/Auth';
 
 
 console.disableYellowBox = true;
@@ -87,28 +90,59 @@ function MessageDrawerNavigator({navigation, route}) {
   );
 }
 
+
 const App = () => {
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [userToken, setUserToken] = useState('');
+
+  const authContext = React.useMemo(
+    ()=>({
+      newToken : async token => {
+        setUserToken(token)
+      }
+    })
+  );
+
+  useEffect(async ()=>{
+    const token = await deviceStorage.loadToken();
+    await setUserToken(token.token);
+    setIsLoading(false);
+  },[]);
+
   return (
+    <AuthContext.Provider value={authContext}>
+
       <NavigationContainer initialRouteName="Login">
         <Stack.Navigator
             screenOptions={{
               headerShown: false
             }}
         >
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="SignUp" component={SignUp} />
-          <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
-          <Stack.Screen name="MainDrawerNavigator" component={MainDrawerNavigator} />
-          <Stack.Screen name="ActivityDrawerNavigator" component={ActivityDrawerNavigator} />
-          {/*<Stack.Screen name="PlanDrawerNavigator" component={PlanDrawerNavigator} />*/}
-          <Stack.Screen name="InboxDrawerNavigator" component={InboxDrawerNavigator} />
-          <Stack.Screen name="MessageDrawerNavigator" component={MessageDrawerNavigator} />
-          <Stack.Screen name="CreateActivity" component={CreateActivity} />
-
+          {
+            !isLoading ?
+                userToken === '' ? (
+                <React.Fragment>
+                  <Stack.Screen name="Login" component={Login} />
+                  <Stack.Screen name="SignUp" component={SignUp} />
+                  <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
+                </React.Fragment>
+              ):(
+                <React.Fragment>
+                  <Stack.Screen name="MainDrawerNavigator" component={MainDrawerNavigator} />
+                  <Stack.Screen name="ActivityDrawerNavigator" component={ActivityDrawerNavigator} />
+                  {/*<Stack.Screen name="PlanDrawerNavigator" component={PlanDrawerNavigator} />*/}
+                  <Stack.Screen name="InboxDrawerNavigator" component={InboxDrawerNavigator} />
+                  <Stack.Screen name="MessageDrawerNavigator" component={MessageDrawerNavigator} />
+                  <Stack.Screen name="CreateActivity" component={CreateActivity} />
+                </React.Fragment>
+              ) : <Stack.Screen name="Loading" component={Loading} />
+          }
 
         </Stack.Navigator>
       </NavigationContainer>
+
+    </AuthContext.Provider>
   );
 };
 
