@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
         color:'#777',
     },
     textH1:{
-        // fontFamily:'Yasmin',
+        fontFamily:'bNazanin',
         fontSize:21,
         color:'#fff',
         fontWeight:'bold',
@@ -43,20 +43,20 @@ const styles = StyleSheet.create({
         fontSize:18,
         color:'#fff',
         marginRight:5,
-        fontFamily:'IRANSansMobile_Light',
+        fontFamily:'bNazanin',
     },
 
     textH3:{
         fontSize: 20,
         color:'#ffffff',
         marginRight:5,
-        fontFamily:'IRANSansMobile_Light',
+        fontFamily:'bNazanin',
     },
     searchText:{
         width:'100%',
         height:'100%',
         textAlign:'right',
-        fontFamily:'IRANSansMobile_Light',
+        fontFamily:'bNazanin',
     },
 
 });

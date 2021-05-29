@@ -10,24 +10,54 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ripple from "react-native-material-ripple";
 import RNExitApp from 'react-native-exit-app';
 import {useNavigation} from '@react-navigation/native';
+import deviceStorage from '../../services/deviceStorage';
+import instance from '../../services/axios';
 
 
 function SideMenu({ navigation, route },props) {
 
   const {navigate, goBack, toggleDrawer, openDrawer, closeDrawer} = useNavigation();
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(()=>{
+
+    (async () => {
+      const token = await deviceStorage.loadToken();
+
+      await instance.post('/user', {},{
+        headers:{
+          Authorization: `Token ${token.token}`
+        }
+      })
+        .then(async function(response) {
+          setUser(response.data);
+          setIsLoading(false);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+
+    })();
+  },[]);
+
 
   return(
     <View style={styles.container}>
       <View style={styles.head}>
-        <View>
-          <Text style={styles.userText}>
-            رحمت الله قاسمی
-          </Text>
-          <Text style={styles.skillText}>
-            تکنسین آبیاری
-          </Text>
-        </View>
-          <FontAwesome name='user' size={35} color='#ff7f29' style={styles.headIcon} />
+        {
+          !isLoading ?
+            <View>
+              <Text style={styles.userText}>
+                {`${user.first_name} ${user.last_name}`}
+              </Text>
+              <Text style={styles.skillText}>
+                {`${user.role}`}
+              </Text>
+            </View> : null
+        }
+        <FontAwesome name='user' size={35} color='#ff7f29' style={styles.headIcon} />
       </View>
       <View style={styles.body}>
         <Ripple style={styles.layerBtn} onPress={()=> navigation.navigate('MainDrawerNavigator')}>

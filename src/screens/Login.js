@@ -4,8 +4,10 @@ import Content from '../components/login/Content';
 import MyHeader from '../components/header/MyHeader';
 import Toast from 'react-native-simple-toast';
 import instance from '../services/axios';
-import deviceStorage from '../services/deviceStorage';
 import {AuthContext} from '../auth/Auth';
+import deviceStorage from '../services/deviceStorage';
+
+
 
 let props = {
     name:'Login',
@@ -44,12 +46,9 @@ const Login = ({navigation}) => {
                 password: password,
             })
               .then(async function(response) {
-                  // console.log(response.status);
-                  // await newToken(response.data.token);
-                  // await deviceStorage.saveItem("token", response.data.token);
-                  // if(response.status === 201){
-                  //     navigation.navigate('MainDrawerNavigator')
-                  // }
+                  console.log(response.data);
+                  await newToken(response.data.token);
+                  await deviceStorage.saveItem("token", response.data.token);
               })
               .catch(function (error) {
                   if(error.response.data.non_field_errors !== undefined){
