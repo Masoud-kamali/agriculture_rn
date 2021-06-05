@@ -1,7 +1,7 @@
 import deviceStorage from './src/services/deviceStorage.js';
 import 'react-native-gesture-handler';
 import React,{useState, useEffect} from 'react';
-import {ScrollView} from 'react-native';
+import {ScrollView, Platform, PermissionsAndroid} from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -12,14 +12,19 @@ import SignUp from './src/screens/SignUp';
 import ForgetPassword from './src/screens/ForgetPassword';
 import Main from './src/screens/Main';
 import SideMenu from './src/components/drawer/SideMenu';
-import Activity from './src/screens/Activity';
-// import Plan from './src/screens/Plan';
+import Program from './src/screens/Program';
 import Inbox from './src/screens/Inbox';
 import Message from './src/screens/Message';
 import CreateActivity from './src/screens/CreateActivity';
 import Loading from './src/screens/Loading';
+import ProgramDetail from './src/screens/ProgramDetail';
+
+
+import Realm from 'realm';
+import {UserSchema} from './src/db/Schemas'
 
 import {AuthContext} from './src/auth/Auth';
+import {requestLocationPermission} from './src/services/locationPermission';
 
 
 console.disableYellowBox = true;
@@ -41,30 +46,30 @@ function MainDrawerNavigator({navigation, route}) {
   );
 }
 
-function ActivityDrawerNavigator({navigation, route}) {
-  return (
-    <Drawer.Navigator
-      drawerPosition= "right"
-      headerRight={true}
-      screenOptions={{ swipeEnabled: false }}
-      drawerContent={(props) => <ScrollView><SideMenu {...props}/></ScrollView>}>
-      <Drawer.Screen name="Activity" component={Activity}/>
-    </Drawer.Navigator>
-  );
-}
-
-
-// function PlanDrawerNavigator({navigation, route}) {
+// function ActivityDrawerNavigator({navigation, route}) {
 //   return (
 //     <Drawer.Navigator
 //       drawerPosition= "right"
 //       headerRight={true}
 //       screenOptions={{ swipeEnabled: false }}
 //       drawerContent={(props) => <ScrollView><SideMenu {...props}/></ScrollView>}>
-//       <Drawer.Screen name="Plan" component={Plan}/>
+//       <Drawer.Screen name="Activity" component={Program}/>
 //     </Drawer.Navigator>
 //   );
 // }
+
+
+function ProgramDrawerNavigator({navigation, route}) {
+  return (
+    <Drawer.Navigator
+      drawerPosition= "right"
+      headerRight={true}
+      screenOptions={{ swipeEnabled: false }}
+      drawerContent={(props) => <ScrollView><SideMenu {...props}/></ScrollView>}>
+      <Drawer.Screen name="Program" component={Program}/>
+    </Drawer.Navigator>
+  );
+}
 
 function InboxDrawerNavigator({navigation, route}) {
   return (
@@ -91,23 +96,40 @@ function MessageDrawerNavigator({navigation, route}) {
 }
 
 
+
 const App = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [userToken, setUserToken] = useState('');
+  const [geoJson, setGeoJson] = useState(null);
 
   const authContext = React.useMemo(
     ()=>({
       newToken : async token => {
         setUserToken(token)
-      }
+      },
+      geoJson : async geoJsonData => {
+        setGeoJson(geoJsonData)
+      },
+      farmData: {farmData: geoJson}
     })
   );
 
+
+
+
   useEffect(async ()=>{
+
+    await requestLocationPermission();
+
+    const realm = await Realm.open({
+      schema: [UserSchema],
+    });
+
     const token = await deviceStorage.loadToken();
     await setUserToken(token.token);
     setIsLoading(false);
+
   },[]);
 
   return (
@@ -130,8 +152,9 @@ const App = () => {
               ):(
                 <React.Fragment>
                   <Stack.Screen name="MainDrawerNavigator" component={MainDrawerNavigator} />
-                  <Stack.Screen name="ActivityDrawerNavigator" component={ActivityDrawerNavigator} />
-                  {/*<Stack.Screen name="PlanDrawerNavigator" component={PlanDrawerNavigator} />*/}
+                  {/*<Stack.Screen name="ActivityDrawerNavigator" component={ActivityDrawerNavigator} />*/}
+                  <Stack.Screen name="ProgramDrawerNavigator" component={ProgramDrawerNavigator} />
+                  <Stack.Screen name="ProgramDetail" component={ProgramDetail} />
                   <Stack.Screen name="InboxDrawerNavigator" component={InboxDrawerNavigator} />
                   <Stack.Screen name="MessageDrawerNavigator" component={MessageDrawerNavigator} />
                   <Stack.Screen name="CreateActivity" component={CreateActivity} />

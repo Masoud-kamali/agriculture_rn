@@ -6,6 +6,7 @@ import {Container} from "native-base";
 import deviceStorage from '../services/deviceStorage';
 import instance from '../services/axios';
 import Toast from 'react-native-simple-toast';
+import {AuthContext} from '../auth/Auth';
 
 
 let props = {
@@ -15,6 +16,9 @@ let props = {
 
 const Main = ({route, navigation},props) => {
 
+  const { geoJson } = React.useContext(AuthContext);
+
+
   const [farms, setFarms] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -22,7 +26,6 @@ const Main = ({route, navigation},props) => {
 
     (async () => {
       const token = await deviceStorage.loadToken();
-
       await instance.post('/user/user_farms_all', {},{
         headers:{
           Authorization: `Token ${token.token}`
@@ -49,7 +52,10 @@ const Main = ({route, navigation},props) => {
                 />
               {
                 !isLoading ?
-                  <Content farms = {farms} /> : null
+                  <Content
+                    farms = {farms}
+                    geoJson = {geoJson}
+                  /> : null
               }
             </React.Fragment>
         </Container>

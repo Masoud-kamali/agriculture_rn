@@ -12,6 +12,8 @@ import RNExitApp from 'react-native-exit-app';
 import {useNavigation} from '@react-navigation/native';
 import deviceStorage from '../../services/deviceStorage';
 import instance from '../../services/axios';
+import Realm from "realm";
+import {UserSchema} from '../../db/Schemas';
 
 
 function SideMenu({ navigation, route },props) {
@@ -23,23 +25,17 @@ function SideMenu({ navigation, route },props) {
   useEffect(()=>{
 
     (async () => {
-      const token = await deviceStorage.loadToken();
 
-      await instance.post('/user', {},{
-        headers:{
-          Authorization: `Token ${token.token}`
-        }
-      })
-        .then(async function(response) {
-          setUser(response.data);
-          setIsLoading(false);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      const realm = await Realm.open({
+        schema: [UserSchema],
+      });
+      const user = await realm.objects("User");
 
+      setUser(user[0]);
+      setIsLoading(false);
 
     })();
+
   },[]);
 
 
@@ -78,7 +74,7 @@ function SideMenu({ navigation, route },props) {
           </Text>
           <AntDesign name='solution1' style={styles.activityIcon}/>
         </Ripple>
-        <Ripple style={styles.layerBtn} onPress={()=> navigation.navigate('PlanDrawerNavigator')}>
+        <Ripple style={styles.layerBtn} onPress={()=> navigation.navigate('ProgramDrawerNavigator')}>
           <Text
             style={styles.layerText}
 

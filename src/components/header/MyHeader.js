@@ -111,7 +111,7 @@ const MyHeader = (props)=>{
         )
     };
 
-    const PlanHeader = () =>{
+    const ProgramHeader = () =>{
         return(
             <Header style={styles.bgHeaderColor} androidStatusBarColor='#0e240a'>
                 <Right style={styles.row}>
@@ -128,6 +128,23 @@ const MyHeader = (props)=>{
                     <MaterialCommunityIcons name='menu' style={[styles.icon]} onPress={()=>openDrawer()}/>
                 </Ripple>
 
+                </Right>
+            </Header>
+        )
+    };
+    const ProgramDetailHeader = () =>{
+        return(
+            <Header style={styles.bgHeaderColor} androidStatusBarColor='#0e240a'>
+                <Right style={styles.row}>
+                    {
+                        props.title ?
+                            <Text style={styles.textH2}>
+                                {props.title}
+                            </Text> :
+                            <Text style={styles.textH1}>
+                               جزئیات فعالیت
+                            </Text>
+                    }
                 </Right>
             </Header>
         )
@@ -178,12 +195,14 @@ const MyHeader = (props)=>{
         return MainHeader();
     }else if(props.name === 'Activity'){
         return ActivityHeader();
-    }else if(props.name === 'Plan'){
-        return PlanHeader();
+    }else if(props.name === 'Program'){
+        return ProgramHeader();
     }else if(props.name === 'Inbox'){
         return InboxHeader();
     }else if(props.name === 'CreateActivity'){
         return CreateActivityHeader();
+    }else if(props.name === 'programDetail'){
+        return ProgramDetailHeader();
     }
 };
 

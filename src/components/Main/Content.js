@@ -10,10 +10,10 @@ import Feather from 'react-native-vector-icons/Feather';
 import deviceStorage from '../../services/deviceStorage';
 import instance from '../../services/axios';
 
-MapboxGL.setAccessToken('pk.eyJ1IjoibWFzb3VkMTIzIiwiYSI6ImNrbm52Mm16ejE4ZTUycHBuc3I4NDY0MzgifQ.05o7FxVCewjjnflQE2oJbw');
-
+MapboxGL.setAccessToken("pk.eyJ1IjoibWFzb3VkMTIzIiwiYSI6ImNrcGh6Y2hobTJ3YjkydW54dzdxbWljamgifQ.VIo429gpnL3Lz-7pq0dAhA");
 
 const Content = (props) => {
+
 
   const [cameraCenter, setCameraCenter] = useState([
       48.519880,
@@ -82,7 +82,6 @@ const Content = (props) => {
 
           await Object.keys(item).map(async (key, index) =>{
             if(key === 'geom'){
-              console.log(item['geom']);
               feature.geometry = JSON.parse(item['geom'])
             }else{
               feature.properties[key] = item[key];
@@ -96,7 +95,7 @@ const Content = (props) => {
           "features": tempSourcePolygonFeatures
         };
 
-        console.log(polygonGeoJson);
+        props.geoJson(polygonGeoJson);
 
         await setPolygonFarms(polygonGeoJson);
         setIsLoading(false);
@@ -124,6 +123,9 @@ const Content = (props) => {
                 // onRegionWillChange = {(e)=>regionChange(e)}
                 onRegionDidChange = {(e)=>regionChange(e)}
               >
+                <MapboxGL.UserLocation
+                  // onUpdate={(location)=>console.log(location)}
+                />
                 <MapboxGL.Camera
                   centerCoordinate={cameraCenter}
                   zoomLevel={zoomLevel}
@@ -208,6 +210,7 @@ const polygonStyle = {
     fillOutlineColor: 'rgba(255, 255, 255, 0.84)',
   },
 };
+
 
 
 
