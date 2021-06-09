@@ -89,27 +89,6 @@ const MyHeader = (props)=>{
         )
     };
 
-    const ActivityHeader = () =>{
-        return(
-            <Header style={styles.bgHeaderColor} androidStatusBarColor='#0e240a'>
-                <Right style={styles.row}>
-                    {
-                        props.title ?
-                            <Text style={styles.textH2}>
-                                {props.title}
-                            </Text> :
-                            <Text style={styles.textH1}>
-                               فعالیت های من
-                            </Text>
-                    }
-                <Ripple style={styles.btn} onPress={()=>toggleDrawer()}>
-                    <MaterialCommunityIcons name='menu' style={[styles.icon]} onPress={()=>openDrawer()}/>
-                </Ripple>
-
-                </Right>
-            </Header>
-        )
-    };
 
     const ProgramHeader = () =>{
         return(
@@ -142,7 +121,42 @@ const MyHeader = (props)=>{
                                 {props.title}
                             </Text> :
                             <Text style={styles.textH1}>
+                               جزئیات برنامه
+                            </Text>
+                    }
+                </Right>
+            </Header>
+        )
+    };
+    const ActivityDetailHeader = () =>{
+        return(
+            <Header style={styles.bgHeaderColor} androidStatusBarColor='#0e240a'>
+                <Right style={styles.row}>
+                    {
+                        props.title ?
+                            <Text style={styles.textH2}>
+                                {props.title}
+                            </Text> :
+                            <Text style={styles.textH1}>
                                جزئیات فعالیت
+                            </Text>
+                    }
+                </Right>
+            </Header>
+        )
+    };
+
+    const FinishActivityHeader = () =>{
+        return(
+            <Header style={styles.bgHeaderColor} androidStatusBarColor='#0e240a'>
+                <Right style={styles.row}>
+                    {
+                        props.title ?
+                            <Text style={styles.textH2}>
+                                {props.title}
+                            </Text> :
+                            <Text style={styles.textH1}>
+                               پایان فعالیت
                             </Text>
                     }
                 </Right>
@@ -172,7 +186,7 @@ const MyHeader = (props)=>{
         )
     };
 
-    const CreateActivityHeader = () =>{
+    const ActivityHeader = () =>{
         return(
             <Header style={styles.bgHeaderColor} androidStatusBarColor='#0e240a'>
                 <Right style={styles.row}>
@@ -182,9 +196,12 @@ const MyHeader = (props)=>{
                                 {props.title}
                             </Text> :
                             <Text style={styles.textH1}>
-                               ایجاد فعالیت
+                               فعالیت های من
                             </Text>
                     }
+                    <Ripple style={styles.btn} onPress={()=>toggleDrawer()}>
+                        <MaterialCommunityIcons name='menu' style={[styles.icon]} onPress={()=>openDrawer()}/>
+                    </Ripple>
                 </Right>
             </Header>
         )
@@ -199,10 +216,12 @@ const MyHeader = (props)=>{
         return ProgramHeader();
     }else if(props.name === 'Inbox'){
         return InboxHeader();
-    }else if(props.name === 'CreateActivity'){
-        return CreateActivityHeader();
     }else if(props.name === 'programDetail'){
         return ProgramDetailHeader();
+    }else if(props.name === 'activityDetail'){
+        return ActivityDetailHeader();
+    }else if(props.name === 'finishActivity'){
+        return FinishActivityHeader();
     }
 };
 

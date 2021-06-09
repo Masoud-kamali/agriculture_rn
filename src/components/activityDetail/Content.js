@@ -20,7 +20,7 @@ MapboxGL.setAccessToken("pk.eyJ1IjoibWFzb3VkMTIzIiwiYSI6ImNrcGh6Y2hobTJ3YjkydW54
 
 const Content = (props) => {
 
-  const {navigation, program, farmData, desc} = props;
+  const {navigation, activity, farmData, desc} = props;
 
   const [cameraCenter, setCameraCenter] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(13);
@@ -115,7 +115,7 @@ const Content = (props) => {
 
         await instance.post('/daily_irrigation_activity/', {
           worker : user[0].id,
-          program : program.id,
+          program : activity.id,
           start_time : today.toISOString(),
           end_time : today.toISOString()
         },{
@@ -207,7 +207,7 @@ const Content = (props) => {
                   sourceLayerID = {`farms`}
                   style={polygonStyle.smileyFace}
                   layerIndex={2}
-                  filter={['==', 'name', `${program.farm}`]}
+                  filter={['==', 'name', `${activity.p_farm}`]}
                 />
               ))
             }
@@ -251,18 +251,16 @@ const Content = (props) => {
       <View style={{backgroundColor: '#fff', margin: 5, width: '90%', padding: 5, height: null, borderColor: '#090942', borderWidth: 2}}>
         <View style={styles.secOne}>
           <View style={styles.secOneLeft}>
-              <Text style={styles.activityValue}>{program.program_type}</Text>
-            <Text style={styles.activityValue}>{program.farm}</Text>
-            <Text style={styles.activityValue}>{moment(program.created_at, 'YYYY-M-D').format('jYYYY/jM/jD')}</Text>
-            <Text style={styles.activityValue}>{moment(program.start_time, 'YYYY-M-D HH:mm:ss').format('jYYYY/jM/jD HH:mm:ss')}</Text>
-            <Text style={styles.activityValue}>{moment(program.end_time, 'YYYY-M-D HH:mm:ss').format('jYYYY/jM/jD HH:mm:ss')}</Text>
-            <Text style={styles.activityValue}>{program.rand}</Text>
-            <Text style={styles.activityValue}>{program.index}</Text>
-            <Text style={styles.activityValue}>{program.from_faro}</Text>
-            <Text style={styles.activityValue}>{program.to_faro}</Text>
+              <Text style={styles.activityValue}>{activity.p_program_type}</Text>
+            <Text style={styles.activityValue}>{activity.p_farm}</Text>
+            <Text style={styles.activityValue}>{moment(activity.p_created_at, 'YYYY-M-D').format('jYYYY/jM/jD')}</Text>
+            <Text style={styles.activityValue}>{moment(activity.start_time, 'YYYY-M-D HH:mm:ss').format('jYYYY/jM/jD HH:mm:ss')}</Text>
+            <Text style={styles.activityValue}>{activity.p_rand}</Text>
+            <Text style={styles.activityValue}>{activity.p_index}</Text>
+            <Text style={styles.activityValue}>{activity.p_from_faro}</Text>
+            <Text style={styles.activityValue}>{activity.p_to_faro}</Text>
           </View>
           <View style={styles.secOneMiddle}>
-            <Text style={styles.pointStyle}>:</Text>
             <Text style={styles.pointStyle}>:</Text>
             <Text style={styles.pointStyle}>:</Text>
             <Text style={styles.pointStyle}>:</Text>
@@ -277,7 +275,6 @@ const Content = (props) => {
             <Text style={styles.activityName}>نام مزرعه</Text>
             <Text style={styles.activityName}>تاریخ ایجاد فعالیت</Text>
             <Text style={styles.activityName}>زمان شروع فعالیت</Text>
-            <Text style={styles.activityName}>زمان پایان فعالیت</Text>
             <Text style={styles.activityName}>راند</Text>
             <Text style={styles.activityName}>شاخص</Text>
             <Text style={styles.activityName}>از فارو</Text>
@@ -287,8 +284,8 @@ const Content = (props) => {
         {
           !desc ?
             <View style={styles.secTwo}>
-              <Ripple style={styles.submitButton} onPress = {()=>showDialog(program._id)}>
-                <Text style={styles.submitText}>شروع فعالیت</Text>
+              <Ripple style={styles.submitButton} onPress = {()=>showDialog(activity.id)}>
+                <Text style={styles.submitText}>پایان فعالیت</Text>
               </Ripple>
             </View> : null
         }

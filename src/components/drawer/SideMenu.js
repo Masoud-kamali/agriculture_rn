@@ -14,6 +14,7 @@ import deviceStorage from '../../services/deviceStorage';
 import instance from '../../services/axios';
 import Realm from "realm";
 import {UserSchema} from '../../db/Schemas';
+import Dialog from 'react-native-dialog';
 
 
 function SideMenu({ navigation, route },props) {
@@ -21,6 +22,7 @@ function SideMenu({ navigation, route },props) {
   const {navigate, goBack, toggleDrawer, openDrawer, closeDrawer} = useNavigation();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [dialogVisible, setDialogVisible] = useState(false);
 
   useEffect(()=>{
 
@@ -37,6 +39,18 @@ function SideMenu({ navigation, route },props) {
     })();
 
   },[]);
+
+  const showDialog = () => {
+    setDialogVisible(true);
+  };
+
+  const handleCancel = () => {
+    setDialogVisible(false);
+  };
+
+  const exitHandler = () => {
+    RNExitApp.exitApp()
+  };
 
 
   return(
@@ -83,15 +97,15 @@ function SideMenu({ navigation, route },props) {
           </Text>
           <AntDesign name='calendar' style={styles.activityIcon}/>
         </Ripple>
-        <Ripple style={styles.layerBtn} onPress={()=> navigation.navigate('InboxDrawerNavigator')}>
-          <Text
-            style={styles.layerText}
-          >
-           پیام ها
-          </Text>
-          <FontAwesome name='envelope' style={styles.envelopeIcon}/>
-        </Ripple>
-        <Ripple style={styles.exitBtn} onPress={()=> RNExitApp.exitApp()}>
+        {/*<Ripple style={styles.layerBtn} onPress={()=> navigation.navigate('InboxDrawerNavigator')}>*/}
+        {/*  <Text*/}
+        {/*    style={styles.layerText}*/}
+        {/*  >*/}
+        {/*   پیام ها*/}
+        {/*  </Text>*/}
+        {/*  <FontAwesome name='envelope' style={styles.envelopeIcon}/>*/}
+        {/*</Ripple>*/}
+        <Ripple style={styles.exitBtn} onPress={()=> showDialog()}>
           <Text
             style={styles.layerText}
           >
@@ -100,6 +114,19 @@ function SideMenu({ navigation, route },props) {
           <MaterialIcons name='exit-to-app' style={styles.activityIcon}/>
         </Ripple>
       </View>
+      <Dialog.Container
+        visible={dialogVisible}
+        headerStyle={{backgroundColor:'#f9fbff', margin: 0, justifyContent:'center', alignItems:'center'}}
+        contentStyle={{backgroundColor:'#f9fbff', borderRadius: 5}}
+        footerStyle={{justifyContent:'center', alignItems:'center'}}
+      >
+        <Dialog.Title><View><Text style={{fontSize: 22, fontWeight:'bold'}}>خروج</Text></View></Dialog.Title>
+        <Dialog.Description>
+          <View style={{padding: 2}}><Text style={{fontSize: 16}}>آیا از خروج از اپلیکیشن اطمینان دارید؟</Text></View>
+        </Dialog.Description>
+        <Dialog.Button label="بله، خارج می شوم" onPress={exitHandler} style={{backgroundColor:'#144d39', margin:5, color:'#fff', borderRadius:5, padding: 10}}/>
+        <Dialog.Button label="خیر، خارج نمی شوم" onPress={handleCancel} style={{backgroundColor:'#7e0f16', margin:5, color:'#fff', borderRadius:5, padding: 10}}/>
+      </Dialog.Container>
 
     </View>
   )

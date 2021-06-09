@@ -56,7 +56,7 @@ const AHeader = (props) =>{
 
                       <Ripple style={[styles.center, styles.AheaderRight, styles.AheaderBorderLeft, {backgroundColor: selectedColorTwo}]} onPress={()=>selectedHandler(false,2)}>
                           <View>
-                              <Text style={styles.AheaderH3Text}>فعالیت های انجام نشده</Text>
+                              <Text style={styles.AheaderH3Text}>فعالیت های جاری</Text>
                           </View>
                           <MaterialCommunityIcons name="account-clock" size={23} style={styles.AheaderIcon}/>
                       </Ripple>

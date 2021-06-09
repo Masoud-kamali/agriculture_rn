@@ -10,33 +10,24 @@ import fa from "moment/src/locale/fa";
 moment.locale("fa", fa);
 moment.loadPersian({usePersianDigits: true, dialect: 'persian-modern'});
 
-const ProgramItem = (props) => {
+const ActivityItem = (props) => {
 
     const {item} = props.item;
-    const {navigation, secondProgram} = props;
 
-    let content = {
-        width:'90%',
-        height: secondProgram ? 115 : 150,
-        backgroundColor:'#fff',
-        elevation: 10,
-        right: -20,
-        marginBottom:10,
-        marginTop:10,
-        borderRadius: 7
-    };
+    const {navigation} = props;
+
     return(
-        <View style={content}>
+        <View style={styles.content}>
             <View style={styles.secOne}>
                 <View style={styles.secOneEnd}>
-                    <Ripple style={styles.buttonStyle}  onPress={()=> navigation.navigate('ProgramDetail', {program: item, desc: true})}>
+                    <Ripple style={styles.buttonStyle}  onPress={()=> navigation.navigate('ActivityDetail', {activity: item, desc: true})}>
                         <MaterialCommunityIcons name="message-reply-text" color='#ff5366' size={30} style={styles.iconStyle}/>
                     </Ripple>
                 </View>
                 <View style={styles.secOneLeft}>
-                    <Text style={styles.activityValue}>{item.program_type}</Text>
-                    <Text style={styles.activityValue}>{item.farm}</Text>
-                    <Text style={styles.activityValue}>{moment(item.created_at, 'YYYY-M-D').format('jYYYY/jM/jD')}</Text>
+                    <Text style={styles.activityValue}>{item.p_program_type}</Text>
+                    <Text style={styles.activityValue}>{item.p_farm}</Text>
+                    <Text style={styles.activityValue}>{moment(item.start_time, 'YYYY-M-D').format('jYYYY/jM/jD')}</Text>
                 </View>
                 <View style={styles.secOneMiddle}>
                     <Text style={styles.pointStyle}>:</Text>
@@ -46,18 +37,14 @@ const ProgramItem = (props) => {
                 <View style={styles.secOneRight}>
                     <Text style={styles.activityName}>نوع فعالیت</Text>
                     <Text style={styles.activityName}>نام مزرعه</Text>
-                    <Text style={styles.activityName}>تاریخ ایجاد</Text>
+                    <Text style={styles.activityName}>تاریخ شروع</Text>
                 </View>
             </View>
-            {
-                !secondProgram ?
-                  <View style={styles.secTwo}>
-                      <Ripple style={styles.submitButton} onPress={()=> navigation.navigate('ProgramDetail', {program: item, desc: false})}>
-                          <Text style={styles.submitText}>شروع فعالیت</Text>
-                      </Ripple>
-                  </View>
-                  :null
-            }
+            <View style={styles.secTwo}>
+                <Ripple style={styles.submitButton} onPress={()=> navigation.navigate('FinishActivity', {activity: item, desc: false})}>
+                    <Text style={styles.submitText}>پایان فعالیت</Text>
+                </Ripple>
+            </View>
         </View>
     )
 };
@@ -108,22 +95,23 @@ const styles = StyleSheet.create({
     activityName:{
         fontSize: 15,
         padding: 3,
-        fontWeight: 'bold',
         color:'#0c1b08',
+        fontWeight: 'bold'
     },
 
     pointStyle:{
         fontSize: 15,
         padding: 3,
         color:'#130066',
-        fontWeight: 'bold',
+        fontWeight: 'bold'
+
     },
 
     activityValue:{
         fontSize: 15,
         padding: 3,
-        color:'#130066',
         fontWeight: 'bold',
+        color:'#130066',
     },
 
     buttonStyle:{
@@ -154,4 +142,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default ProgramItem;
+export default ActivityItem;

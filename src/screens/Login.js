@@ -78,7 +78,7 @@ const Login = ({navigation}) => {
 
                     })
                     .catch(function (error) {
-                      setIsLoading(false)
+                      setIsLoading(false);
                         console.log(error);
                     });
                   setIsLoading(false);

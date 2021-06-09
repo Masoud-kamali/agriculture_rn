@@ -2,6 +2,7 @@ import deviceStorage from './src/services/deviceStorage.js';
 import 'react-native-gesture-handler';
 import React,{useState, useEffect} from 'react';
 import {ScrollView, Platform, PermissionsAndroid} from 'react-native';
+import NetInfo from "@react-native-community/netinfo";
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -18,6 +19,9 @@ import Message from './src/screens/Message';
 import CreateActivity from './src/screens/CreateActivity';
 import Loading from './src/screens/Loading';
 import ProgramDetail from './src/screens/ProgramDetail';
+import Activity from './src/screens/Activity';
+import ActivityDetail from './src/screens/ActivityDetail';
+import FinishActivity from './src/screens/FinishActivity';
 
 
 import Realm from 'realm';
@@ -46,17 +50,17 @@ function MainDrawerNavigator({navigation, route}) {
   );
 }
 
-// function ActivityDrawerNavigator({navigation, route}) {
-//   return (
-//     <Drawer.Navigator
-//       drawerPosition= "right"
-//       headerRight={true}
-//       screenOptions={{ swipeEnabled: false }}
-//       drawerContent={(props) => <ScrollView><SideMenu {...props}/></ScrollView>}>
-//       <Drawer.Screen name="Activity" component={Program}/>
-//     </Drawer.Navigator>
-//   );
-// }
+function ActivityDrawerNavigator({navigation, route}) {
+  return (
+    <Drawer.Navigator
+      drawerPosition= "right"
+      headerRight={true}
+      screenOptions={{ swipeEnabled: false }}
+      drawerContent={(props) => <ScrollView><SideMenu {...props}/></ScrollView>}>
+      <Drawer.Screen name="Activity" component={Activity}/>
+    </Drawer.Navigator>
+  );
+}
 
 
 function ProgramDrawerNavigator({navigation, route}) {
@@ -83,17 +87,17 @@ function InboxDrawerNavigator({navigation, route}) {
   );
 }
 
-function MessageDrawerNavigator({navigation, route}) {
-  return (
-    <Drawer.Navigator
-      drawerPosition= "right"
-      headerRight={true}
-      screenOptions={{ swipeEnabled: false }}
-      drawerContent={(props) => <ScrollView><SideMenu {...props}/></ScrollView>}>
-      <Drawer.Screen name="Message" component={Message}/>
-    </Drawer.Navigator>
-  );
-}
+// function MessageDrawerNavigator({navigation, route}) {
+//   return (
+//     <Drawer.Navigator
+//       drawerPosition= "right"
+//       headerRight={true}
+//       screenOptions={{ swipeEnabled: false }}
+//       drawerContent={(props) => <ScrollView><SideMenu {...props}/></ScrollView>}>
+//       <Drawer.Screen name="Message" component={Message}/>
+//     </Drawer.Navigator>
+//   );
+// }
 
 
 
@@ -128,6 +132,7 @@ const App = () => {
 
     const token = await deviceStorage.loadToken();
     await setUserToken(token.token);
+
     setIsLoading(false);
 
   },[]);
@@ -152,11 +157,13 @@ const App = () => {
               ):(
                 <React.Fragment>
                   <Stack.Screen name="MainDrawerNavigator" component={MainDrawerNavigator} />
-                  {/*<Stack.Screen name="ActivityDrawerNavigator" component={ActivityDrawerNavigator} />*/}
+                  <Stack.Screen name="ActivityDrawerNavigator" component={ActivityDrawerNavigator} />
                   <Stack.Screen name="ProgramDrawerNavigator" component={ProgramDrawerNavigator} />
                   <Stack.Screen name="ProgramDetail" component={ProgramDetail} />
+                  <Stack.Screen name="ActivityDetail" component={ActivityDetail} />
+                  <Stack.Screen name="FinishActivity" component={FinishActivity} />
                   <Stack.Screen name="InboxDrawerNavigator" component={InboxDrawerNavigator} />
-                  <Stack.Screen name="MessageDrawerNavigator" component={MessageDrawerNavigator} />
+                  {/*<Stack.Screen name="MessageDrawerNavigator" component={MessageDrawerNavigator} />*/}
                   <Stack.Screen name="CreateActivity" component={CreateActivity} />
                 </React.Fragment>
               ) : <Stack.Screen name="Loading" component={Loading} />

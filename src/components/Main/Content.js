@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 
-import { View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, BackHandler} from 'react-native';
 import Toast from 'react-native-simple-toast';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -9,6 +9,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import deviceStorage from '../../services/deviceStorage';
 import instance from '../../services/axios';
+import NetInfo from '@react-native-community/netinfo';
+import Dialog from 'react-native-dialog';
 
 MapboxGL.setAccessToken("pk.eyJ1IjoibWFzb3VkMTIzIiwiYSI6ImNrcGh6Y2hobTJ3YjkydW54dzdxbWljamgifQ.VIo429gpnL3Lz-7pq0dAhA");
 
@@ -23,7 +25,9 @@ const Content = (props) => {
   const [selectedFeature, setSelectedFeature] = useState({properties: { icon: '', message: ''},geometry:{ type: '', coordinates: [0,0] }});
 
   const [polygonFarms, setPolygonFarms] = useState(null);
+  const [userLocation, setUserLocation] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [dialogVisible, setDialogVisible] = useState(false);
 
   const zoomExtentHandler = () =>{
     setZoomLevel(11)
@@ -58,6 +62,13 @@ const Content = (props) => {
     let coordinate = e.geometry.coordinates;
     await setCameraCenter(coordinate);
   };
+
+  const myLocationHandler = async (e) =>{
+
+    await setZoomLevel(14);
+    await setCameraCenter(userLocation);
+  };
+
 
     useEffect(()=> {
 
@@ -104,7 +115,6 @@ const Content = (props) => {
 
     },[]);
 
-
     let _map = useRef(null);
 
     return (
@@ -124,7 +134,8 @@ const Content = (props) => {
                 onRegionDidChange = {(e)=>regionChange(e)}
               >
                 <MapboxGL.UserLocation
-                  // onUpdate={(location)=>console.log(location)}
+                  onUpdate={(location)=>setUserLocation([location.coords.longitude, location.coords.latitude])}
+
                 />
                 <MapboxGL.Camera
                   centerCoordinate={cameraCenter}
@@ -133,7 +144,6 @@ const Content = (props) => {
                 <MapboxGL.ShapeSource
                   id='farms'
                   shape={polygonFarms}
-                  onPress={()=>alert('aa')}
                 >
                   {
                     polygonFarms.features.map((item, key) => (
@@ -142,6 +152,8 @@ const Content = (props) => {
                         id={`${key}`}
                         sourceLayerID = {`farms`}
                         style={polygonStyle.smileyFace}
+                        onPress={(e)=>console.log(e.features)}
+
                         // filter={['==', 'subCategory', `${item.properties.subCategory}`]}
                       />
                     ))
@@ -150,7 +162,7 @@ const Content = (props) => {
                 </MapboxGL.ShapeSource>
               </MapboxGL.MapView>
               <TouchableOpacity
-                onPress={() => alert('sdfsdf')}
+                onPress={() => myLocationHandler()}
                 activeOpacity={0.3}
                 style={[
                   styles.button,
@@ -186,6 +198,7 @@ const Content = (props) => {
                 <Feather name="zoom-out" size={32} color="#fff" style={styles.textIconStyle} />
               </TouchableOpacity>
             </React.Fragment> : null
+
         }
       </View>
     );

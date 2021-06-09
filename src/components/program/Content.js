@@ -6,15 +6,17 @@ import deviceStorage from "../../services/deviceStorage";
 import Realm from "realm";
 import {UserSchema} from '../../db/Schemas';
 import instance from '../../services/axios';
-
 import * as Progress from 'react-native-progress';
+
 const Content = (props) => {
 
   const {navigation} = props;
 
   const [secondProgram, setSecondProgram] = useState(false);
   const [daily_irrigation_program, setDaily_irrigation_program] = useState(null);
+  const [daily_irrigation_program_ended, setDaily_irrigation_program_ended] = useState(null);
   const [programs, setPrograms] = useState([]);
+  const [ended_programs, setEnded_Programs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(()=>{
@@ -37,16 +39,30 @@ const Content = (props) => {
 
       if(tempPermissions.includes("sugarcane_view_daily_irrigation_activity") || tempPermissions.includes("sugarcane_delete_daily_irrigation_activity") || tempPermissions.includes("sugarcane_confirm_daily_irrigation_activity") || tempPermissions.includes("sugarcane_change_daily_irrigation_activity") || tempPermissions.includes("sugarcane_add_daily_irrigation_activity")){
 
+        let temp_daily_irrigation_program = [];
+        let temp_daily_irrigation_program_ended = [];
+
         await instance.get('/daily_irrigation_program', {
           headers:{
             Authorization: `Token ${token.token}`
           }
         })
           .then(async function(response) {
-            console.log(response.data.results);
-            setDaily_irrigation_program(response.data.results);
-            let tempProgram = [...programs, ...response.data.results];
+            response.data.results.map((item, key)=>{
+              if(item.status === 'انجام نشده'){
+                temp_daily_irrigation_program.push(item)
+              }else if(item.status === 'انجام شده'){
+                temp_daily_irrigation_program_ended.push(item)
+              }
+            });
+
+            setDaily_irrigation_program(temp_daily_irrigation_program);
+            setDaily_irrigation_program_ended(temp_daily_irrigation_program_ended);
+
+            let tempProgramEnded = [...ended_programs, ...temp_daily_irrigation_program_ended];
+            let tempProgram = [...programs, ...temp_daily_irrigation_program];
             setPrograms(tempProgram);
+            setEnded_Programs(tempProgramEnded);
 
             setIsLoading(false);
           })
@@ -62,31 +78,46 @@ const Content = (props) => {
       <AHeader setSecondProgram={setSecondProgram} page={'Program'}/>
       {
         !isLoading ?
-            !secondProgram ?
+            !secondProgram && programs.length > 0 ?
                 <SafeAreaView style={{paddingBottom: '10%', backgroundColor:'#e8ffdf', height:'100%'}}>
                   <FlatList
                       data={programs}
                       renderItem={(item) => <ProgramItem
                           item={item}
+                          secondProgram={secondProgram}
                           navigation={navigation}
                       />}
                       keyExtractor={item => item.id}
                   />
                 </SafeAreaView>
-                :
+                : !secondProgram && programs.length === 0 ?
+                  <SafeAreaView style={{paddingBottom: '10%', backgroundColor:'#e8ffdf', height:'100%'}}>
+                    <View style={{justifyContent:'center', alignItems:'center', marginTop: 20}}>
+                      <Text style={{fontSize: 18, fontWeight: 'bold', color:'#060659'}}>برنامه ای برای نمایش وجود ندارد</Text>
+                    </View>
+                  </SafeAreaView>
+              : secondProgram && ended_programs.length > 0 ?
                 <SafeAreaView style={{paddingBottom: '10%', backgroundColor:'#e8ffdf', height:'100%'}}>
                   <FlatList
-                      data={programs}
+                      data={ended_programs}
                       renderItem={(item) => <ProgramItem
+                        secondProgram={secondProgram}
                         item={item}
                         navigation={navigation}
                       />}
                       keyExtractor={item => item.id}
                   />
-                </SafeAreaView> :
-            <SafeAreaView style={{paddingBottom: '10%', backgroundColor:'#e8ffdf', height:'100%', alignItems:'center'}}>
-              <Progress.Circle size={40} indeterminate={true} color={'#0e004b'} style={{marginTop: 40}} borderWidth={2}/>
-            </SafeAreaView>
+                </SafeAreaView>
+                :
+                    <SafeAreaView style={{paddingBottom: '10%', backgroundColor:'#e8ffdf', height:'100%'}}>
+                      <View style={{justifyContent:'center', alignItems:'center', marginTop: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', color:'#060659'}}>برنامه ای برای نمایش وجود ندارد</Text>
+                      </View>
+                    </SafeAreaView>
+                :
+                <SafeAreaView style={{paddingBottom: '10%', backgroundColor:'#e8ffdf', height:'100%', alignItems:'center'}}>
+                  <Progress.Circle size={40} indeterminate={true} color={'#0e004b'} style={{marginTop: 40}} borderWidth={2}/>
+                </SafeAreaView>
       }
     </View>
   );
